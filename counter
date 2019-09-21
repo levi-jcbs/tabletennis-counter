@@ -1,0 +1,240 @@
+#!/bin/bash
+
+exec 2>> /dev/null
+
+u=0
+
+echo 0 > rechts.txt
+echo 0 > links.txt
+
+tput civis
+
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+
+echo -en "\015\033[1;33m\033[4m00\033[0m\033[0;37m:\033[0m\033[1;33m00\033[0m" 
+
+
+vr=0
+ac=1
+a=0
+cor=0
+while [ $a -eq 0 ]; do
+
+    #     SETTING
+
+    ausnahme=0
+    
+    read -n1 -s command
+    links=$( cat links.txt );
+    rechts=$( cat rechts.txt );
+    
+    if [ "$command" -eq 4 ]; then
+	ausnahme=1
+	links=$(( $links + 1 ));
+    fi
+
+    if [ "$command" -eq 1 ] && [ "$links" -gt 0 ]; then
+	links=$(( $links - 1 ));
+    fi
+
+
+    if [ "$command" -eq 6 ]; then
+	rechts=$(( $rechts + 1 ));
+	ausnahme=1
+    fi
+
+    if [ "$command" -eq 3 ] && [ "$rechts" -gt 0 ]; then
+	rechts=$(( $rechts - 1 ));
+    fi
+
+
+    if [ "$command" -eq 2 ]; then
+	rechts=0
+	links=0
+	ausnahme=1
+
+	if [ $cor -ne 1 ]; then
+	    ac=0
+	fi
+	
+    fi
+
+
+
+    if [ "$command" -eq 0 ] && [ $cor -ne 1 ]; then
+	cor=1
+	ac=$(( $ac - 1 ))
+	command=7
+    fi
+
+    if [ "$command" -eq 0 ] && [ $cor -eq 1 ]; then
+	cor=0
+	command=7
+    fi
+
+    
+    
+
+    echo $rechts > rechts.txt
+    echo $links  >  links.txt
+    
+    # END SETTING
+    
+
+    al=''
+    ar=''
+    links=''
+    rechts=''
+    
+    if [[ $u -eq 0 ]]; then
+	links=$( cat links.txt )
+	rechts=$( cat rechts.txt )
+    else
+	rechts=$( cat links.txt )
+	links=$( cat rechts.txt )
+    fi
+    
+    
+    if [[ "$links" -lt "$rechts" ]]; then
+	fl='31m'
+	fr='32m'
+    else
+	fl='32m'
+	fr='31m'
+    fi
+
+    if [[ "$links" -eq "$rechts" ]]; then
+        fl='33m'
+	fr='33m'
+    fi
+    
+    if [[ $links -eq 0 ]] && [[ $rechts -eq 0 ]] && [[ $ausnahme -ne 1 ]] && [[ $cor -ne 1 ]]; then
+	ac=0
+    fi
+    
+
+    if [[ $links -eq 0 ]] && [[ $rechts -eq 0 ]]; then
+	vorl=1
+	vorr=1
+    fi
+
+    
+    if [[ "$links" -ne "$vorl" ]] || [[ "$rechts" -ne "$vorr" ]] || [[ "$farbe" != "$vorfarbe" ]] || [[ $command -eq 7 ]]; then
+
+	
+	
+      	
+	
+	if [[ $ac -eq 4 ]] && [[ $cor -ne 1 ]]; then
+	    ac=0
+	fi
+
+	
+
+	
+	if [[ $rechts -lt 10 ]]; then
+	    rechtsc="0$rechts"
+	else
+	    rechtsc=$rechts
+	fi
+
+	if [[ $links -lt 10 ]]; then
+	    linksc="0$links"
+	else
+	    linksc=$links
+	fi
+
+
+	if [[ $ac -lt 2 ]]; then
+	    al='\033[4m'
+	fi
+
+	if [[ $ac -lt 4 ]] && [[ $ac -gt 1 ]]; then
+	    ar='\033[4m'
+	fi
+
+	if [ $cor -eq 1 ]; then
+	    ar='\033[5m'
+	    al='\033[5m'
+	fi
+	
+	
+	    
+	if [ $u -eq 0 ]; then
+	    echo -en "\015\033[1;$fl$al$linksc\033[0m\033[0;37m:\033[0m\033[1;$fr$ar$rechtsc\033[0m" 
+	fi
+
+	
+	vorl=$links;
+	vorr=$rechts;
+	vorfarbe=$farbe;
+
+
+	if [[ $links -gt 10 ]] && [[ $links -gt $(( $rechts + 1)) ]] && [[ $cor -ne 1 ]]; then
+	    i=0
+	    while [ $i -lt 60 ]; do
+		echo -en "\015\033[1;37m\033[42m$linksc\033[0m\033[0;37m:\033[0m\033[1;$fr$rechtsc\033[0m"
+		sleep 0.08
+		echo -en "\015\033[1;32m\033[47m$linksc\033[0m\033[0;37m:\033[0m\033[1;$fr$rechtsc\033[0m" 
+		sleep 0.08
+		i=$(( $i + 1 ))
+	    done
+	    echo 0 > rechts.txt
+	    echo 0 > links.txt
+	    u=0
+	fi
+
+	if [[ $rechts -gt 10 ]] && [[ $rechts -gt $(( $links + 1)) ]] && [[ $cor -ne 1 ]]; then
+	    i=0
+	    while [ $i -lt 60 ]; do
+		echo -en "\015\033[1;$fl$linksc\033[0m\033[0;37m:\033[0m\033[1;37m\033[42m$rechtsc\033[0m " 
+		sleep 0.08
+		echo -en "\015\033[1;$fl$linksc\033[0m\033[0;37m:\033[0m\033[1;32m\033[47m$rechtsc\033[0m " 
+		sleep 0.08
+		i=$(( $i + 1 ))
+	    done
+	    u=0
+	    echo 0 > rechts.txt
+	    echo 0 > links.txt
+	fi
+
+	if [[ $cor -ne 1 ]]; then
+	    ac=$(( $ac + 1 ))
+	fi
+	    
+	
+    fi
+
+	
+	
+
+
+
+    if [ $vr -ne 1 ]; then
+	vr=1
+    fi
+
+    
+done
+
+tput cnorm
