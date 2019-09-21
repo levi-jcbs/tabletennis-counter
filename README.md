@@ -1,7 +1,7 @@
 # Table Tennis - Counter
 An Easy Counter for Table Tennis.
 
-##Shortcuts
+## Shortcuts
 (NUM-BLOCK)
 
 4: left +1
