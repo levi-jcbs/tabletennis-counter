@@ -15,5 +15,5 @@ ____________________________
 2: reset
 ____________________________
 0: press to adjust and press again to confirm.
-
+____________________________
 7: change how has addition.
