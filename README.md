@@ -4,11 +4,9 @@ An Easy Counter for Table Tennis.
 ## Shortcuts
 (NUM-BLOCK)
 
-4: left +1
-1: left -1
+4: left +1 | 1: left -1
 
-6: right +1
-3: right -1
+6: right +1 | 3: right -1
 
 2: reset
 
